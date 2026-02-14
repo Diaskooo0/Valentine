@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Будешь моей Валентинкой?</title>
+
+<style>
+body {
+    margin: 0;
+    background: #0b1c24;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+}
+
+.card {
+    background: white;
+    padding: 40px;
+    text-align: center;
+    border-radius: 15px;
+}
+
+.buttons {
+    margin-top: 20px;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.yes-button {
+    background: #ff007f;
+    color: white;
+    font-size: 26px;
+    padding: 15px 40px;
+}
+
+.no-button {
+    background: #ccc;
+    font-size: 20px;
+    padding: 12px 30px;
+    margin-left: 10px;
+}
+
+/* Дрожание */
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    50% { transform: translateX(4px); }
+    75% { transform: translateX(-4px); }
+    100% { transform: translateX(0); }
+}
+
+.shake {
+    animation: shake 0.3s infinite;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <h2>Ты будешь моей Валентинкой? ❤️</h2>
+
+    <div class="buttons">
+        <button class="yes-button" id="yes">Да</button>
+        <button class="no-button" id="no">Нет</button>
+    </div>
+</div>
+
+<script>
+let clicks = 0;
+
+const yesBtn = document.getElementById("yes");
+const noBtn = document.getElementById("no");
+
+const messages = [
+    "Ты уверена?",
+    "Точно?",
+    "Подумай ещё раз...",
+    "Последний шанс...",
+    "Попробовать никогда не поздно 😉"
+];
+
+noBtn.addEventListener("click", () => {
+
+    if (clicks < messages.length) {
+        noBtn.textContent = messages[clicks];
+    }
+
+    clicks++;
+
+    // Увеличиваем Да
+    let yesSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
+    yesBtn.style.fontSize = (yesSize * 1.3) + "px";
+
+    // Уменьшаем Нет, но не меньше 16px
+    let noSize = parseFloat(window.getComputedStyle(noBtn).fontSize);
+    if (noSize > 16) {
+        noBtn.style.fontSize = (noSize * 0.85) + "px";
+    }
+
+    // Дрожание
+    if (clicks >= messages.length - 1) {
+        noBtn.classList.add("shake");
+    }
+
+    // Убегание
+    if (clicks >= messages.length) {
+        noBtn.addEventListener("mouseover", () => {
+            const x = Math.random() * (window.innerWidth - 120);
+            const y = Math.random() * (window.innerHeight - 60);
+            noBtn.style.position = "absolute";
+            noBtn.style.left = x + "px";
+            noBtn.style.top = y + "px";
+        });
+    }
+
+    // Полное исчезновение
+    if (clicks > messages.length + 2) {
+        noBtn.style.display = "none";
+    }
+});
+
+yesBtn.addEventListener("click", () => {
+    document.body.innerHTML = `
+    <style>
+        body {
+            margin:0;
+            overflow:hidden;
+            background:#0b1c24;
+        }
+
+        .overlay {
+            height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .card-final {
+            background:white;
+            padding:60px 80px;
+            border-radius:25px;
+            font-size:42px;
+            font-family:Arial;
+            text-align:center;
+            box-shadow:0 20px 50px rgba(0,0,0,0.4);
+            animation: pop 0.6s ease forwards, pulse 2s infinite 1s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity:0; }
+            to { opacity:1; }
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0.5); opacity:0; }
+            100% { transform: scale(1); opacity:1; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .heart {
+            position:absolute;
+            font-size:24px;
+            animation: floatUp 4s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) scale(1);
+                opacity:1;
+            }
+            100% {
+                transform: translateY(-10vh) scale(1.5);
+                opacity:0;
+            }
+        }
+    </style>
+
+    <div class="overlay">
+        <div class="card-final">
+            ❤️А теперь забери кое что под дверью❤️
+        </div>
+    </div>
+    `;
+
+    // создаём летающие сердечки
+    for (let i = 0; i < 20; i++) {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.innerHTML = "❤️";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.animationDuration = (3 + Math.random() * 2) + "s";
+        document.body.appendChild(heart);
+    }
+});
+
+
+</script>
+
+</body>
+</html>
